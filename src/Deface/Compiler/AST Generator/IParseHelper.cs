@@ -14,9 +14,37 @@ namespace Compilerator.Deface.Compiler.AST_Generator
         /// </summary>
         /// <param name="Lexemes"></param>
         /// <returns></returns>
-        public static List<CsData> ParseArguments(List<LexToken> Lexemes)
+        public static List<CsData> ParseArguments(List<CsAst> AST)
         {
-            return new List<CsData>();
+            List<CsData> Arguments = new List<CsData>();
+
+            for (int i = 0; i < AST.Count; i++)
+            {
+                switch (AST[i].AstKind)
+                {
+                    case CsAstKind.SingularData:
+                        {
+                            Arguments.Add(AST[i] as CsData);
+                            break;
+                        }
+
+                    case CsAstKind.Call:
+                        {
+                            CsCall Call = AST[i] as CsCall;
+                            Arguments.Add(new CsData()
+                            {
+                                Data = Call,
+                                Type = new CsType()
+                                {
+                                    TypeKind = CsTypeKind.Runtime
+                                }
+                            });
+                            break;
+                        }
+                }
+            }
+
+            return Arguments;
         }
     }
 }

@@ -12,5 +12,10 @@ namespace Compilerator.Deface.Compiler.AST_Generator.AST
         /// Gets / sets the ast kind associated with the node
         /// </summary>
         public CsAstKind AstKind { get; set; }
+
+        /// <summary>
+        /// Gets / sets the line of the node
+        /// </summary>
+        public int Line { get; set; }
     }
 }

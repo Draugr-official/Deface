@@ -5,15 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Compilerator.Deface.Compiler.AST_Generator.AST;
 using Compilerator.Deface.Compiler.Lexical_Analyzer;
-using Compilerator.Deface.Compiler.Handlers;
+using Compilerator.Deface.Handlers;
 using Compilerator.Deface.Compiler.AST_Generator.Utils;
+using System.Runtime.CompilerServices;
 
 namespace Compilerator.Deface.Compiler.AST_Generator
 {
     class AstGen
     {
-        static bool IsCall(LexToken lx1, LexToken lx2) => 
-            lx1.Lexeme == Lexemes.Identifier && lx2.Lexeme == Lexemes.Parentheses;
+        static bool IsCall(List<LexToken> LexTokens, int Index) =>
+            LexTokens[Index].LexKind            == LexKinds.Identifier 
+                && LexTokens[Index + 1].LexKind == LexKinds.Parentheses;
+
+        static bool IsConditionalStatement(List<LexToken> LexTokens, int Index) =>
+            LexTokens[Index].LexKind            == LexKinds.Identifier 
+                && LexTokens[Index].Value       == "if" 
+                && LexTokens[Index + 1].LexKind == LexKinds.Parentheses 
+                && LexTokens[Index + 2].LexKind == LexKinds.Compound;
+
+        static bool ElsePresent(List<LexToken> LexTokens, int Index) =>
+            LexTokens[Index].LexKind            == LexKinds.Identifier
+                && LexTokens[Index].Value       == "else"
+                && LexTokens[Index + 1].LexKind == LexKinds.Compound;
+
 
         /// <summary>
         /// Parses a stream of lexical tokens into a hierarchical, abstract syntax tree representation
@@ -23,11 +37,31 @@ namespace Compilerator.Deface.Compiler.AST_Generator
         public static List<CsClass> Generate(List<LexToken> LexTokens) =>
             ParseClasses(LexTokens);
 
+        static List<CsAst> ParseConditional(List<CsAst> AST)
+        {
+            for(int i = 1; i < AST.Count - 1; i++)
+            {
+                if(AST[i] is CsPassEq && AST.Count > i + 1)
+                {
+                    AST[i] = new CsBinaryExpr()
+                    {
+                        Left = AST[i - 1],
+                        Right = AST[i + 1]
+                    };
+                    AST.RemoveAt(i - 1);
+                    AST.RemoveAt(i);
+                }
+            }
+
+            return AST;
+        }
+
         /// <summary>
-        /// Converts an array of lexemes into a abstract syntax tree
+        /// Converts an array of lextokens into a abstract syntax tree
         /// </summary>
         /// <param name="LexTokens"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static List<CsAst> ParseBody(List<LexToken> LexTokens)
         {
             List<CsAst> AST = new List<CsAst>();
@@ -36,21 +70,39 @@ namespace Compilerator.Deface.Compiler.AST_Generator
             for (int i = 0; i < lc; i++)
             {
                 /* Logical syntax */
-                if (lc > i + 1 && 
-                   IsCall(LexTokens[i], LexTokens[i + 1]))
+                if (lc > i + 2 && IsConditionalStatement(LexTokens, i))
+                {
+                    List<CsAst> ElseCase = (lc > i + 4 && ElsePresent(LexTokens, i + 3) ? ParseBody(LexTokens[i + 4].Children) : null);
+
+                    AST.Add(new CsConditionalSt()
+                    {
+                        Test = ParseBody(LexTokens[i + 1].Children),
+                        TrueCase = ParseBody(LexTokens[i + 2].Children),
+                        FalseCase = ElseCase
+                    });
+                    i += 2;
+                }
+
+                if (lc > i + 1 && IsCall(LexTokens, i))
                 {
                     AST.Add(new CsCall()
                     {
                         Name = LexTokens[i].Value,
-                        Arguments = CsArgumentParser.Parse(ParseBody(LexTokens[i + 1].Children))
+                        Arguments = IParseHelper.ParseArguments(ParseBody(LexTokens[i + 1].Children)),
+                        Line = LexTokens[i].Line
                     });
                     i++;
                     continue;
                 }
 
+                if(LexTokens[i].LexKind == LexKinds.Equals)
+                {
+                    AST.Add(new CsPassEq());
+                    continue;
+                }
 
                 /* If no logical syntax can be found, move on to constants */
-                if(LexTokens[i].Lexeme == Lexemes.String)
+                if(LexTokens[i].LexKind == LexKinds.String)
                 {
                     AST.Add(new CsData()
                     {
@@ -58,15 +110,36 @@ namespace Compilerator.Deface.Compiler.AST_Generator
                         Type = new CsType()
                         {
                             TypeKind = CsTypeKind.Sequence,
-                            SequenceKind = CsSequenceKind.String
+                            SequenceKind = CsSequenceKind.String,
+                            IsConstant = true
                         },
-                        Data = LexTokens[i].Value
+                        Data = LexTokens[i].Value,
+                        Line = LexTokens[i].Line
+                    });
+                    continue;
+                }
+
+                if (LexTokens[i].LexKind == LexKinds.Number)
+                {
+
+                    AST.Add(new CsData()
+                    {
+                        AstKind = CsAstKind.SingularData,
+                        Type = new CsType()
+                        {
+                            TypeKind = CsTypeKind.Primitive,
+                            PrimitiveKind = CsPrimitiveValidator.Integral(LexTokens[i].Value),
+                            IsConstant = true,
+                            IsNumeric = true
+                        },
+                        Data = LexTokens[i].Value,
+                        Line = LexTokens[i].Line
                     });
                     continue;
                 }
             }
 
-            return AST;
+            return ParseConditional(AST);
         }
 
         /// <summary>
@@ -80,10 +153,10 @@ namespace Compilerator.Deface.Compiler.AST_Generator
 
             for(int i = 0; i < LexTokens.Count - 3; i++)
             {
-                if(LexTokens[i].Lexeme == Lexemes.Identifier 
-                    && LexTokens[i + 1].Lexeme == Lexemes.Identifier 
-                    && LexTokens[i + 2].Lexeme == Lexemes.Parentheses 
-                    && LexTokens[i + 3].Lexeme == Lexemes.Compound)
+                if(LexTokens[i].LexKind == LexKinds.Identifier 
+                    && LexTokens[i + 1].LexKind == LexKinds.Identifier 
+                    && LexTokens[i + 2].LexKind == LexKinds.Parentheses 
+                    && LexTokens[i + 3].LexKind == LexKinds.Compound)
                 {
                     Methods.Add(new CsMethod()
                     {
@@ -108,17 +181,17 @@ namespace Compilerator.Deface.Compiler.AST_Generator
 
             for(int i = 0; i < LexTokens.Count - 2; i++)
             {
-                if(LexTokens[i].Lexeme == Lexemes.Identifier && LexTokens[i].Value == "class")
+                if(LexTokens[i].LexKind == LexKinds.Identifier && LexTokens[i].Value == "class")
                 {
-                    if(LexTokens[i + 1].Lexeme != Lexemes.Identifier)
+                    if(LexTokens[i + 1].LexKind != LexKinds.Identifier)
                     {
-                        ErrorHandler.ThrowException("Class name expected", LexTokens[i + 1].Line.ToString());
+                        ErrorHandler.ThrowException("Class name expected", "AST:31", LexTokens[i + 1].Line.ToString());
                     }
                     else
                     {
-                        if (LexTokens[i + 2].Lexeme != Lexemes.Compound)
+                        if (LexTokens[i + 2].LexKind != LexKinds.Compound)
                         {
-                            ErrorHandler.ThrowException("Compound expected in class declaration", LexTokens[i + 2].Line.ToString());
+                            ErrorHandler.ThrowException("Compound expected in class declaration", "AST:32", LexTokens[i + 2].Line.ToString());
                         }
                         else
                         {

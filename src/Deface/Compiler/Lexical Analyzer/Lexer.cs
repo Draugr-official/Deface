@@ -1,6 +1,7 @@
 ﻿using Compilerator.Deface.Compiler.Lexical_Analyzer.Lex;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
 
             for(int i = 0; i < Code.Length; i++)
             {
-                Lexemes Token = Lexemes.Unidentified;
+                LexKinds Token = LexKinds.Unidentified;
                 string Value = Code[i].ToString();
                 bool IdentifierPasser = false;
 
@@ -29,36 +30,36 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                 {
                     case '{':
                         {
-                            Token = Lexemes.CurlyBracketOpen;
+                            Token = LexKinds.CurlyBracketOpen;
                             break;
                         }
                     case '}':
                         {
-                            Token = Lexemes.CurlyBracketClose;
+                            Token = LexKinds.CurlyBracketClose;
                             break;
                         }
 
 
                     case '(':
                         {
-                            Token = Lexemes.RoundBracketOpen;
+                            Token = LexKinds.RoundBracketOpen;
                             break;
                         }
                     case ')':
                         {
-                            Token = Lexemes.RoundBracketClose;
+                            Token = LexKinds.RoundBracketClose;
                             break;
                         }
 
 
                     case '[':
                         {
-                            Token = Lexemes.SquareBracketOpen;
+                            Token = LexKinds.SquareBracketOpen;
                             break;
                         }
                     case ']':
                         {
-                            Token = Lexemes.SquareBracketClose;
+                            Token = LexKinds.SquareBracketClose;
                             break;
                         }
 
@@ -66,18 +67,23 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                         {
                             if (Code[i + 1] == '=')
                             {
-                                Token = Lexemes.Equals;
+                                Token = LexKinds.Equals;
                                 i++;
                             }
                             else
-                                Token = Lexemes.Assign;
+                                Token = LexKinds.Assign;
                             break;
                         }
 
 
+                    case '#':
+                        {
+                            Token = LexKinds.Hashtag;
+                            break;
+                        }
                     case ';':
                         {
-                            Token = Lexemes.Semicolon;
+                            Token = LexKinds.Semicolon;
                             break;
                         }
                     case '"':
@@ -90,7 +96,7 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                             if(!StringPasser && Code[i + 2] == '\'')
                             {
                                 Value = Code[i + 1].ToString();
-                                Token = Lexemes.Char;
+                                Token = LexKinds.Char;
                                 i += 2;
                             }
                             break;
@@ -102,7 +108,8 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                         }
 
                     /* Ignore */
-                    case ' ': case '\t':
+                    case ' ': 
+                    case '\t':
                         {
                             break;
                         }
@@ -125,21 +132,33 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                 }
                 else if(!IdentifierPasser)
                 {
-                    /* If a string was recently constructed, add the lexeme */
+                    /* If a string was recently constructed, add the lextoken */
                     if(stringBuilder.Length > 0)
                     {
+                        if(identifierBuilder.Length > 0)
+                        {
+                            LexTokens.Add(new LexToken()
+                            {
+                                Value = identifierBuilder.ToString(),
+                                LexKind = LexKinds.Identifier,
+                                Line = CurrentLine
+                            });
+
+                            identifierBuilder.Clear();
+                        }
+
                         if(stringBuilder.ToString() != "\"")
                             LexTokens.Add(new LexToken()
                             {
                                 Value = stringBuilder.ToString().Substring(1, stringBuilder.Length - 1),
-                                Lexeme = Lexemes.String,
+                                LexKind = LexKinds.String,
                                 Line = CurrentLine
                             });
 
                         stringBuilder.Clear();
-                        identifierBuilder.Clear();
                     }
-                    /* Else, validate its token and add the lexeme */
+
+                    /* Else, validate its token and add the lextoken */
                     else
                     {
                         if (identifierBuilder.Length > 0)
@@ -148,24 +167,24 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer
                                 LexTokens.Add(new LexToken()
                                 {
                                     Value = identifierBuilder.ToString(),
-                                    Lexeme = Lexemes.Number,
+                                    LexKind = LexKinds.Number,
                                     Line = CurrentLine
                                 });
                             else
                                 LexTokens.Add(new LexToken()
                                 {
                                     Value = identifierBuilder.ToString(),
-                                    Lexeme = Lexemes.Identifier,
+                                    LexKind = LexKinds.Identifier,
                                     Line = CurrentLine
                                 });
 
                             identifierBuilder.Clear();
                         }
 
-                        if (identifierBuilder.Length == 0 && Token != Lexemes.Unidentified)
+                        if (identifierBuilder.Length == 0 && Token != LexKinds.Unidentified)
                             LexTokens.Add(new LexToken()
                             {
-                                Lexeme = Token,
+                                LexKind = Token,
                                 Value = Value,
                                 Line = CurrentLine
                             });

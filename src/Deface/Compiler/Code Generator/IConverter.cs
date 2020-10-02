@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compilerator.Deface.Compiler.Code_Generator.Props;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Compilerator.Deface.Compiler.Code_Generator
         /// </summary>
         /// <param name="MethodName"></param>
         /// <returns></returns>
-        public static (int, int) MemberToInterrupt(string MemberName)
+        public static (int, int, int) MemberToInterrupt(string MemberName)
         {
             string[] Info = MemberName.Split('.');
             switch(Info[0])
@@ -28,13 +29,24 @@ namespace Compilerator.Deface.Compiler.Code_Generator
                             case "WriteLine":
                                 {
                                     return ((int)Props.Interrupts.FileDescriptors.stdout, 
-                                            (int)Props.Interrupts.Kernel32.sys_write);
+                                            (int)Props.Interrupts.Kernel32.sys_write,
+                                            (int)Props.Interrupts.WinApi.Kernel);
                                 }
                         }
                         break;
                     }
             }
-            throw new Exceptions.MemberNotFound();
+            throw new Exception("Member not found; " + MemberName);
+        }
+
+        public static x86DefineDirectives DetermineDD(ulong Value)
+        {
+            if (Value > 0xFFFFFFFFFFFFFFFF) throw new Exception("Value bigger than unsigned long");
+            if (Value > 0xFFFFFFFF) return x86DefineDirectives.dq;
+            if (Value > 0xFFFF) return x86DefineDirectives.dd;
+            if (Value > 0xFF) return x86DefineDirectives.dw;
+
+            return x86DefineDirectives.db;
         }
     }
 

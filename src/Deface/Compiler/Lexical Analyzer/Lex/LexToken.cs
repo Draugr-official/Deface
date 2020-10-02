@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 namespace Compilerator.Deface.Compiler
 {
     /// <summary>
-    /// Standard lexeme struct
+    /// Standard lextoken struct
     /// </summary>
     public struct LexToken
     {
         /// <summary>
-        /// Gets / sets the lextoken of the lexeme
+        /// Gets / sets the lexkind of the lextoken
         /// </summary>
-        public Lexemes Lexeme { get; set; }
+        public LexKinds LexKind { get; set; }
 
         /// <summary>
-        /// Gets / sets the value of the lexeme (e.g "content here")
+        /// Gets / sets the value of the lextoken (e.g "content here")
         /// </summary>
         public string Value { get; set; }
 
@@ -27,7 +27,7 @@ namespace Compilerator.Deface.Compiler
         public List<LexToken> Children { get; set; }
 
         /// <summary>
-        /// Gets / sets the line associated with the lexeme
+        /// Gets / sets the line associated with the lextoken
         /// </summary>
         public int Line { get; set; }
     }

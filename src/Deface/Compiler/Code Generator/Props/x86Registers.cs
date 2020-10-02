@@ -42,8 +42,13 @@ namespace Compilerator.Deface.Compiler.Code_Generator.Props
 		ebp,
 
 		/// <summary>
-		/// x86 register 'esi'
+		/// x86 register 'esi', source
 		/// </summary>
 		esi,
+
+		/// <summary>
+		/// x86 register 'edi', destination
+		/// </summary>
+		edi,
 	}
 }

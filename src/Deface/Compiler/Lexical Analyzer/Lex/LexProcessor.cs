@@ -17,14 +17,14 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer.Lex
 
             for (int i = 0; i < tokenStream.Count; i++)
             {
-                switch (tokenStream[i].Lexeme)
+                switch (tokenStream[i].LexKind)
                 {
-                    case Lexemes.CurlyBracketOpen:
+                    case LexKinds.CurlyBracketOpen:
                         tlen++;
                         startCollect = true;
                         break;
 
-                    case Lexemes.CurlyBracketClose:
+                    case LexKinds.CurlyBracketClose:
                         tlen--;
                         if (tlen == 0)
                             startCollect = false;
@@ -42,7 +42,7 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer.Lex
                         TClc.RemoveAt(0);
                         Tokens.Add(new LexToken()
                         {
-                            Lexeme = Lexemes.Compound,
+                            LexKind = LexKinds.Compound,
                             Children = FixCompounds(TClc)
                         });
                         TClc.Clear();
@@ -62,14 +62,14 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer.Lex
 
             for (int i = 0; i < tokenStream.Count; i++)
             {
-                switch (tokenStream[i].Lexeme)
+                switch (tokenStream[i].LexKind)
                 {
-                    case Lexemes.RoundBracketOpen:
+                    case LexKinds.RoundBracketOpen:
                         tlen++;
                         startCollect = true;
                         break;
 
-                    case Lexemes.RoundBracketClose:
+                    case LexKinds.RoundBracketClose:
                         tlen--;
                         if (tlen == 0)
                             startCollect = false;
@@ -87,7 +87,7 @@ namespace Compilerator.Deface.Compiler.Lexical_Analyzer.Lex
                         TClc.RemoveAt(0);
                         Tokens.Add(new LexToken()
                         {
-                            Lexeme = Lexemes.Parentheses,
+                            LexKind = LexKinds.Parentheses,
                             Children = FixParentheses(TClc)
                         });
                         TClc.Clear();

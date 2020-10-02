@@ -12,7 +12,7 @@ namespace Compilerator.Deface.Compiler.Code_Generator.Props
     public enum x86Mnemonics
     {
         /// <summary>
-        /// x86 mnemonic 'mov'
+        /// x86 mnemonic 'mov', move
         /// </summary>
         mov,
 
@@ -22,17 +22,37 @@ namespace Compilerator.Deface.Compiler.Code_Generator.Props
         call,
 
         /// <summary>
-        /// x86 mnemonic 'int'
+        /// x86 mnemonic 'int', interrupt
         /// </summary>
         _int,
 
         /// <summary>
-        /// x86 mnemonic 'add'
+        /// x86 mnemonic 'lea', load effective address
+        /// </summary>
+        lea,
+
+        /// <summary>
+        /// x86 mnemonic 'je', jump if equals
+        /// </summary>
+        je,
+
+        /// <summary>
+        /// x86 mnemonic 'jne', jump if not equals
+        /// </summary>
+        jne,
+
+        /// <summary>
+        /// x86 mnemonic 'rep'
+        /// </summary>
+        rep,
+
+        /// <summary>
+        /// x86 mnemonic 'add', addition
         /// </summary>
         add,
 
         /// <summary>
-        /// x86 mnemonic 'sub'
+        /// x86 mnemonic 'sub', subtraction
         /// </summary>
         sub,
 

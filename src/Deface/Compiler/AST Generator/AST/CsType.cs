@@ -22,5 +22,15 @@ namespace Compilerator.Deface.Compiler.AST_Generator.AST
         /// If available, gets / sets the sequentual kind of the type
         /// </summary>
         public CsSequenceKind SequenceKind { get; set; }
+
+        /// <summary>
+        /// Gets / sets if the type is a constant
+        /// </summary>
+        public bool IsConstant { get; set; }
+
+        /// <summary>
+        /// Gets / sets if the type is a number
+        /// </summary>
+        public bool IsNumeric { get; set; }
     }
 }

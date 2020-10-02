@@ -43,13 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Deface\Compiler\Assembler\Asml.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AstGen.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsAst.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsAstKind.cs" />
+    <Compile Include="Deface\Compiler\AST Generator\AST\CsBinaryExpr.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsCall.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsClass.cs" />
+    <Compile Include="Deface\Compiler\AST Generator\AST\CsConditionalSt.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsData.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsField.cs" />
+    <Compile Include="Deface\Compiler\AST Generator\AST\CsPassEq.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsPointerType.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsPrimitiveKind.cs" />
     <Compile Include="Deface\Compiler\AST Generator\AST\CsMethod.cs" />
@@ -59,7 +63,6 @@
     <Compile Include="Deface\Compiler\AST Generator\AST\CsTypeKind.cs" />
     <Compile Include="Deface\Compiler\AST Generator\IParseHelper.cs" />
     <Compile Include="Deface\Compiler\AST Generator\Utils\CsDataValidator.cs" />
-    <Compile Include="Deface\Compiler\AST Generator\Utils\CsArgumentParser.cs" />
     <Compile Include="Deface\Compiler\AST Generator\Utils\CsParameterParser.cs" />
     <Compile Include="Deface\Compiler\AST Generator\Utils\CsPrimitiveValidator.cs" />
     <Compile Include="Deface\Compiler\Code Generator\CodeGen.cs" />
@@ -76,13 +79,14 @@
     <Compile Include="Deface\Compiler\Code Generator\Props\x86Registers.cs" />
     <Compile Include="Deface\Compiler\Code Generator\Props\x86ReserveDirectives.cs" />
     <Compile Include="Deface\Compiler\Code Generator\Props\x86DataDeclaration_UNI.cs" />
-    <Compile Include="Deface\Compiler\Exceptions\MemberNotFound.cs" />
-    <Compile Include="Deface\Compiler\Handlers\ErrorHandler.cs" />
+    <Compile Include="Deface\Compiler\Preprocessor\Preprocessor.cs" />
+    <Compile Include="Deface\Exceptions\MemberNotFound.cs" />
+    <Compile Include="Deface\Handlers\ErrorHandler.cs" />
     <Compile Include="Deface\Compiler\Lexical Analyzer\Lexer.cs" />
     <Compile Include="Deface\Compiler\Lexical Analyzer\Lex\IValidator.cs" />
     <Compile Include="Deface\Compiler\Lexical Analyzer\Lex\LexProcessor.cs" />
     <Compile Include="Deface\Compiler\Lexical Analyzer\Lex\LexToken.cs" />
-    <Compile Include="Deface\Compiler\Lexical Analyzer\Lex\Lexemes.cs" />
+    <Compile Include="Deface\Compiler\Lexical Analyzer\Lex\LexKinds.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -21,22 +21,23 @@ namespace Compilerator.Deface.Compiler.AST_Generator
                 TypeKind = CsTypeKind.Primitive
             };
 
-            switch(Lexeme.Lexeme)
+            switch(Lexeme.LexKind)
             {
-                case Lexemes.String:
+                case LexKinds.String:
                     {
                         Type.TypeKind = CsTypeKind.Sequence;
                         Type.SequenceKind = CsSequenceKind.String;
                         break;
                     }
 
-                case Lexemes.Number:
+                case LexKinds.Number:
                     {
                         Type.PrimitiveKind = CsPrimitiveValidator.Integral(Lexeme.Value);
+                        Type.IsNumeric = true;
                         break;
                     }
 
-                case Lexemes.Boolean:
+                case LexKinds.Boolean:
                     {
                         Type.PrimitiveKind = CsPrimitiveKind.Bool;
                         break;
