@@ -3,7 +3,7 @@
 
 To-Add syntax:
     * Ternary conditional expressions : ADDED
-    * Binary operations (E.g '3 + 4') | 3 + 4 / 2 * 3 == (3 + 4) => (/ 2) => (* 3) |
+    * Binary operations (E.g '3 + 4') | 3 + 4 / 2 * 3 == (3 + 4) => (/ 2) => (* 3) | : ADDED
     * Attributes
     * Tables
 
