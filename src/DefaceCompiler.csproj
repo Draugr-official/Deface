@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{436E0330-0278-4E02-AAEB-049462331B8D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DefaceCompiler</RootNamespace>
+    <AssemblyName>DefaceCompiler</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compiler\ASTGen\AstGenerator.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\AssignmentExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\BinaryExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\DecrementExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\IncrementExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\LocalExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\MethodCallExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\RelationalExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\ConstantExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\Expression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\ExpressionList.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\TernaryExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\AssignmentStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\ClassDeclarationStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\CompoundStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\DoWhileStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\ForLoopStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\ReturnStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\WhileStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\IfStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\LocalDeclarationStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\MethodCallStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\MethodDeclarationStatement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Node.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\Statement.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Statements\StatementList.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Expressions\LocalDeclarationExpression.cs" />
+    <Compile Include="Compiler\ASTGen\AST\Objects\DataType.cs" />
+    <Compile Include="Compiler\ASTGen\TokenReader.cs" />
+    <Compile Include="Compiler\Lexer\CodeLexer.cs" />
+    <Compile Include="Compiler\Lexer\Objects\LexKind.cs" />
+    <Compile Include="Compiler\Lexer\Objects\LexToken.cs" />
+    <Compile Include="Compiler\Lexer\Objects\LexTokenList.cs" />
+    <Compile Include="Compiler\Preprocessor\CPreprocessor.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\ASTView.cs" />
+    <None Include="Tests\Ackermann.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
