@@ -1,64 +1,8 @@
 # Deface
- A .NET compiler directed towards compiling C# to machine code.
- Currently utilizes Linux interrupts, as of now.
+Deface is a compiler directed towards compiling C# to machine code. This compiler contains a code analysis API which can be easily accessed, learned and used.
 
-# Usage
-There is currently no command line syntax.
+## Features
+Deface is packed with utilities and features ready for you to use. A speedy AST generator alongside great code generation will result in greatly optimized output and short compilation times, even for bigger solutions. We are looking for new ways to optimize and generate code continously as we develop this compiler.
 
-# Examples
-Constant folding is disabled for the following snippets.
-After inputting the following code;
-```cs
-class Program
-{
-        void Main()
-        {
-                if("hi" == "hi")
-                {
-                        Console.WriteLine("the same");
-                }
-                else
-                {
-                        Console.WriteLine("not the same");
-                }
-        }
-}
-```
-
-Deface will output the following x86 assembly code in a object file;
-```asm
-global _start
-section .text:
-Console_WriteLine:
-    mov ebx, 1
-    mov eax, 4
-    int 80h
-    ret
-
-_start:
-    lea esi, [var0]
-    lea edi, [var2]
-    mov ecx, var1
-    rep cmpsb
-    jne var3
-    mov ecx, var4
-    mov edx, 8
-    call Console_WriteLine
-    jmp var5
-var3:
-    mov ecx, var6
-    mov edx, 12
-    call Console_WriteLine
-var5:
-    mov eax, 1
-    int 80h
-    ret
-
-section .data:
-    var0 db 'hi',0
-    var1 equ $-var0
-    var2 db 'hi',0
-    var4 db 'the same',0
-    var6 db 'not the same',0
-```
-Some names are preserved to help debugging
+## Development
+Deface is in its early-mid development stages, allowing for suggestions and contribution to the project. Issue a request if you have ideas for changes to this compiler.
